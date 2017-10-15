@@ -27,6 +27,7 @@ import {
 	NestedSidebarPropType,
 } from 'post-editor/editor-sidebar/constants';
 import HistoryButton from 'post-editor/editor-ground-control/history-button';
+import SaveStatus from 'post-editor/editor-ground-control/save-status';
 
 export class EditorGroundControl extends PureComponent {
 	static propTypes = {
@@ -152,12 +153,6 @@ export class EditorGroundControl extends PureComponent {
 		return buttonLabels[ primaryButtonState ];
 	}
 
-	shouldShowStatusLabel() {
-		const { isSaving, post } = this.props;
-
-		return isSaving || ( post && post.ID && ! postUtils.isPublished( post ) );
-	}
-
 	isSaveEnabled() {
 		return (
 			! this.props.isSaving &&
@@ -258,11 +253,9 @@ export class EditorGroundControl extends PureComponent {
 	}
 
 	render() {
-		const { isSaving, translate } = this.props;
+		const { isSaving, post, translate } = this.props;
 		const isSaveEnabled = this.isSaveEnabled();
-		const shouldShowStatusLabel = this.shouldShowStatusLabel();
-		const hasRevisions =
-			isEnabled( 'post-editor/revisions' ) && get( this.props.post, 'revisions.length' );
+		const hasRevisions = isEnabled( 'post-editor/revisions' ) && get( post, 'revisions.length' );
 
 		return (
 			<Card className="editor-ground-control">
@@ -298,28 +291,12 @@ export class EditorGroundControl extends PureComponent {
 						</span>
 					</div>
 				) }
-				{ ( isSaveEnabled || shouldShowStatusLabel ) && (
-					<div className="editor-ground-control__status">
-						{ isSaveEnabled && (
-							<button
-								className="editor-ground-control__save button is-link"
-								onClick={ this.onSaveButtonClick }
-								tabIndex={ 3 }
-							>
-								{ translate( 'Save' ) }
-							</button>
-						) }
-						{ ! isSaveEnabled &&
-						shouldShowStatusLabel && (
-							<span
-								className="editor-ground-control__save-status"
-								data-e2e-status={ isSaving ? 'Saving…' : 'Saved' }
-							>
-								{ isSaving ? translate( 'Saving…' ) : translate( 'Saved' ) }
-							</span>
-						) }
-					</div>
-				) }
+				<SaveStatus
+					isSaving={ isSaving }
+					isSaveAvailable={ isSaveEnabled }
+					onClick={ this.onSaveButtonClick }
+					post={ post }
+				/>
 				{ hasRevisions && (
 					<HistoryButton
 						selectRevision={ this.props.selectRevision }
