@@ -59,7 +59,7 @@ export default function() {
 		} );
 
 		if ( config.isEnabled( 'manage/plugins/upload' ) ) {
-			page( '/plugins/upload', controller.sites );
+			page( '/plugins/upload', sites );
 			page( '/plugins/upload/:site_id', siteSelection, navigation, pluginsController.upload );
 		}
 
