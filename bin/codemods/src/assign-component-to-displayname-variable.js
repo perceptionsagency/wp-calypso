@@ -86,7 +86,8 @@ export default function transformer( file, api ) {
         const calleeNameValue = node.get( 'declaration', 'callee', 'name' ).value
 
         if ( ! calleeNameValue ) {
-            throw new Error( 'return early, no immediate function call' );
+            console.log( 'return early, no immediate function call' );
+            return;
         }
 
         const exportDefaultInstance = j( node );
@@ -95,7 +96,8 @@ export default function transformer( file, api ) {
         const matchingArg = getMatchingArg( args );
 
         if ( ! matchingArg ) {
-            throw new Error( 'return early, no createClass or extends Component argument found' );
+            console.log( 'return early, no createClass or extends Component argument found' );
+            return;
         }
 
         const isCreateClassInstance = argIsCreateClassInstance( matchingArg )
@@ -115,7 +117,8 @@ export default function transformer( file, api ) {
             .value;
 
         if ( ! displayNameValue ) {
-            throw new Error( 'return early, no displayNameValue' );
+            console.log( 'return early, no displayNameValue' );
+            return;
         }
 
         exportDefaultInstance.replaceWith(
